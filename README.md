@@ -10,6 +10,14 @@ sample for [opt-tech/redshift-fake-driver] and [localstack/localstack]
 
 ## Usage
 
+build sbt docker image
+
+```sh
+docker-compose build
+```
+
+and run sbt test
+
 ```sh
 docker-compose run --rm app
 ```
