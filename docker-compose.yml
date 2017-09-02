@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    container_name: sbt_app
+    volumes:
+      - ".:/app"
+      - "~/.ivy2:/root/.ivy2"
+      - "~/.sbt:/root/.sbt"
+      - "~/.coursier:/root/.coursier"
+    environment:
+      - LOCALSTACK_HOST=localstack
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    links:
+      - localstack
+      - postgres
+    networks:
+      - testing_area
+    command:
+      - sbt
+      - test
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4567-4582:4567-4582"
+      - "8080:8080"
+    expose:
+      - "4567-4582"
+      - 8080
+    volumes:
+      - "./tmp/localstack:/tmp/localstack"
+    networks:
+      - testing_area
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    networks:
+      - testing_area
+    environment:
+      - POSTGRES_USER=redshift_user
+      - POSTGRES_PASSWORD=redshift_pass
+      - POSTGRES_DB=sample
+
+networks:
+  testing_area:
